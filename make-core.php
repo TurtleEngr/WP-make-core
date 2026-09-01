@@ -331,13 +331,12 @@ function fMcUsedMediaIds($pText) {
 }
 
 /*
- * True if the attachment's file name appears anywhere in pText. The
- * extension is dropped before searching, so the generated sizes
- * ("photo-300x200.jpg") and the scaled copy ("photo-scaled.jpg")
- * all count as a reference to "photo.jpg".
- *
- * This match is deliberately loose. A file that is not really used
- * may be kept, which is better than deleting one that is.
+ * True if the attachment's file name appears in pText as a file
+ * name. The name must be followed by its extension, optionally with
+ * a size suffix in between, so "photo.jpg" is matched by
+ * "photo-300x200.jpg" and "photo-scaled.jpg" but not by the bare
+ * word "photo" in a sentence. A .webp or .avif copy made by an
+ * image optimizer also counts.
  */
 function fMcFileInText($pId, $pText) {
     $tFile = get_post_meta($pId, '_wp_attached_file', true);
@@ -345,14 +344,20 @@ function fMcFileInText($pId, $pText) {
         return false;
     }
     $tName = basename($tFile);
+    $tExt = '';
     $tDot = strrpos($tName, '.');
     if ($tDot !== false) {
+        $tExt = substr($tName, $tDot + 1);
         $tName = substr($tName, 0, $tDot);
     }
-    if ($tName === '') {
+    if ($tName === '' || $tExt === '') {
         return false;
     }
-    return strpos($pText, $tName) !== false;
+    $tPat = '/' . preg_quote($tName, '/')
+        . '(?:-\d+x\d+|-scaled|-rotated|-e\d+)*'
+        . '\.(?:' . preg_quote($tExt, '/') . '|webp|avif)/i';
+
+    return preg_match($tPat, $pText) === 1;
 }
 
 /*
@@ -376,6 +381,181 @@ function fMcPurgeMedia() {
             continue;
         }
         if (wp_delete_attachment($tId, true)) {
+            $tCount++;
+        }
+    }
+    return $tCount;
+}
+
+/*
+ * File name extensions the uploads sweep is allowed to delete.
+ * Anything else (.php, .htaccess, .css, .js, .zip, .log) is left
+ * alone, so protective files, plugin output, and backups survive.
+ */
+function fMcMediaExt() {
+    return array('jpg', 'jpeg', 'jpe', 'png', 'gif', 'webp', 'avif',
+        'bmp', 'tif', 'tiff', 'ico', 'heic', 'heif', 'svg', 'svgz',
+        'mp3', 'm4a', 'ogg', 'oga', 'wav', 'flac', 'mp4', 'm4v',
+        'mov', 'wmv', 'avi', 'mpg', 'mpeg', 'ogv', 'webm', '3gp',
+        'pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'odt',
+        'psd');
+}
+
+/*
+ * Directory names the uploads sweep never descends into. These hold
+ * plugin data, form uploads, caches, and, on a multisite network,
+ * the media belonging to the other sites.
+ */
+function fMcSkipDirs() {
+    return array('sites', 'woocommerce_uploads', 'wc-logs',
+        'updraft', 'backwpup', 'ai1wm-backups', 'backupbuddy',
+        'wpvivid', 'elementor', 'et-cache', 'cache', 'gravity_forms',
+        'wpforms', 'formidable', 'wp-personal-data-exports');
+}
+
+/*
+ * Every file on disk claimed by a surviving attachment: the
+ * original, each generated size, the pre-scale original, and any
+ * .webp or .avif copy an image optimizer made alongside them.
+ * Returned as a lookup keyed by normalized full path.
+ */
+function fMcKeptFiles() {
+    $tKeep = array();
+    foreach (fMcAllMediaIds() as $tId) {
+        $tFile = get_attached_file($tId);
+        if (empty($tFile)) {
+            continue;
+        }
+        $tList = array($tFile);
+        $tDir = dirname($tFile);
+        $tMeta = wp_get_attachment_metadata($tId);
+        if (! empty($tMeta['original_image'])) {
+            $tList[] = $tDir . '/' . $tMeta['original_image'];
+        }
+        if (! empty($tMeta['sizes'])) {
+            foreach ($tMeta['sizes'] as $tSize) {
+                if (! empty($tSize['file'])) {
+                    $tList[] = $tDir . '/' . $tSize['file'];
+                }
+            }
+        }
+        foreach ($tList as $tPath) {
+            $tPath = wp_normalize_path($tPath);
+            $tBase = preg_replace('/\.[^.\/]+$/', '', $tPath);
+            $tKeep[$tPath] = true;
+            $tKeep[$tPath . '.webp'] = true;
+            $tKeep[$tPath . '.avif'] = true;
+            $tKeep[$tBase . '.webp'] = true;
+            $tKeep[$tBase . '.avif'] = true;
+        }
+    }
+    return $tKeep;
+}
+
+/*
+ * Delete every file in the uploads tree that no surviving
+ * attachment claims. This is what catches files that were never in
+ * the media library, left-overs from attachments deleted long ago,
+ * and thumbnail sizes WordPress no longer tracks.
+ *
+ * Only the extensions in fMcMediaExt() are removed, and the
+ * directories in fMcSkipDirs() are skipped whole. Returns the
+ * number of files deleted.
+ *
+ * Call this last, after fMcPurgeMedia(), so that the files of the
+ * attachments it deleted are already gone.
+ */
+function fMcSweepUploads() {
+    $tUp = wp_upload_dir();
+    if (! empty($tUp['error']) || empty($tUp['basedir'])
+        || ! is_dir($tUp['basedir'])) {
+        return 0;
+    }
+    $tKeep = fMcKeptFiles();
+    $tSkip = fMcSkipDirs();
+    $tExt = fMcMediaExt();
+    $tCount = 0;
+
+    $tDir = new RecursiveDirectoryIterator($tUp['basedir'],
+        FilesystemIterator::SKIP_DOTS);
+    $tFilter = new RecursiveCallbackFilterIterator($tDir,
+        function ($pItem) use ($tSkip) {
+            if ($pItem->isDir()) {
+                return ! in_array(
+                    strtolower($pItem->getFilename()), $tSkip);
+            }
+            return true;
+        });
+
+    foreach (new RecursiveIteratorIterator($tFilter) as $tItem) {
+        if (! $tItem->isFile() || $tItem->isLink()) {
+            continue;
+        }
+        $tPath = wp_normalize_path($tItem->getPathname());
+        if (isset($tKeep[$tPath])) {
+            continue;
+        }
+        $tDot = strrpos($tItem->getFilename(), '.');
+        if ($tDot === false) {
+            continue;
+        }
+        $tThis = strtolower(
+            substr($tItem->getFilename(), $tDot + 1));
+        if (! in_array($tThis, $tExt)) {
+            continue;
+        }
+        if (@unlink($tPath)) {
+            $tCount++;
+        }
+    }
+    return $tCount;
+}
+
+/*
+ * Remove the directories left empty by the sweep, such as the year
+ * and month folders whose files are all gone. The uploads
+ * directory itself is kept, and the directories in fMcSkipDirs()
+ * are neither entered nor removed. Returns the number removed.
+ *
+ * Call this after fMcSweepUploads(). Directories are tried deepest
+ * first, so a month folder is gone before its year folder is
+ * tried, and the year folder can go in the same pass.
+ */
+function fMcPruneDirs() {
+    $tUp = wp_upload_dir();
+    if (! empty($tUp['error']) || empty($tUp['basedir'])
+        || ! is_dir($tUp['basedir'])) {
+        return 0;
+    }
+    $tSkip = fMcSkipDirs();
+    $tList = array();
+
+    $tDir = new RecursiveDirectoryIterator($tUp['basedir'],
+        FilesystemIterator::SKIP_DOTS);
+    $tFilter = new RecursiveCallbackFilterIterator($tDir,
+        function ($pItem) use ($tSkip) {
+            if ($pItem->isDir()) {
+                return ! in_array(
+                    strtolower($pItem->getFilename()), $tSkip);
+            }
+            return true;
+        });
+    $tIter = new RecursiveIteratorIterator($tFilter,
+        RecursiveIteratorIterator::SELF_FIRST);
+
+    foreach ($tIter as $tItem) {
+        if ($tItem->isDir() && ! $tItem->isLink()) {
+            $tList[] = wp_normalize_path($tItem->getPathname());
+        }
+    }
+
+    usort($tList, function ($pA, $pB) {
+        return substr_count($pB, '/') - substr_count($pA, '/');
+    });
+
+    $tCount = 0;
+    foreach ($tList as $tPath) {
+        if (@rmdir($tPath)) {
             $tCount++;
         }
     }
@@ -429,12 +609,16 @@ function fMcHandlePost() {
             $tBad);
         $tRev = fMcPurgeRevisions();
         $tMedia = fMcPurgeMedia();
+        $tFile = fMcSweepUploads();
+        $tDir = fMcPruneDirs();
         $gMcDelPost = '';
         $gMcDelPage = '';
         $gMcNotice[] = array('notice-success',
-            sprintf('Deleted %d posts and pages, %d revisions from'
-                . ' what remains, and %d unused media files.',
-                $tNum, $tRev, $tMedia));
+            sprintf('Deleted %d posts and pages, and %d revisions'
+                . ' from what remains. Removed %d unused media'
+                . ' files, %d orphan files, and %d empty folders'
+                . ' from the uploads directory.',
+                $tNum, $tRev, $tMedia, $tFile, $tDir));
     }
 
     if (! empty($tBad)) {
@@ -467,15 +651,17 @@ function fMcRenderPage() {
         $gMcDelPage = '';
     }
     $tConfirm = 'Permanently delete every post and page listed in'
-        . ' the Delete Posts and Delete Pages boxes, and every media'
-        . ' file that is left unused? This cannot be undone.';
+        . ' the Delete Posts and Delete Pages boxes, every media'
+        . ' file that is left unused, and every unclaimed file in'
+        . ' the uploads directory? This cannot be undone.';
     ?>
     <div class="wrap">
         <h1>MakeCore <?php echo esc_html(cMcVersion); ?></h1>
         <p>List the posts and pages to keep, then review what is
         left before deleting.<br> <b>Deletion is permanent,</b> and revisions
         of the surviving posts and pages are removed as well, along
-        with any media file they no longer refer to.</p>
+        with any media file they no longer refer to and any
+        unclaimed file left in the uploads directory.</p>
         <p><b>For help <a
         href="https://github.com/TurtleEngr/WP-make-core/blob/main/README.md"
         target="_blank">Click Here</a></b></p>
