@@ -709,7 +709,8 @@ function fMcRenderPage() {
 
             <p class="submit">
                 <button type="submit" name="mcAction" value="list"
-                    class="button">List</button><br>
+                    class="button">List</button></p.
+            <p class="submit">
                 <button type="submit" name="mcAction" value="delete"
                     class="button button-primary"
                     onclick="return confirm('<?php
