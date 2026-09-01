@@ -333,7 +333,9 @@ function fMcRenderPage() {
         <p>List the posts and pages to keep, then review what is
         left before deleting.<br> <b>Deletion is permanent,</b> and revisions
         of the surviving posts and pages are removed as well.</p>
-        <p>For help <a href="" target="_blank">Click Here</a></p>
+        <p><b>For help <a
+        href="https://github.com/TurtleEngr/WP-make-core/blob/main/README.md"
+        target="_blank">Click Here</a></b></p>
 
         <?php foreach ($gMcNotice as $tNote) { ?>
             <div class="notice <?php echo esc_attr($tNote[0]); ?>">
