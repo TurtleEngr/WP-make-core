@@ -243,6 +243,146 @@ function fMcPurgeRevisions() {
 }
 
 /*
+ * Every attachment ID. Attachments use the "inherit" status, so
+ * fMcStatusList() does not apply to them.
+ */
+function fMcAllMediaIds() {
+    return get_posts(array(
+        'post_type' => 'attachment',
+        'post_status' => 'any',
+        'numberposts' => -1,
+        'fields' => 'ids',
+        'orderby' => 'ID',
+        'order' => 'ASC',
+    ));
+}
+
+/*
+ * The content and excerpt of every remaining post and page, joined
+ * into one string. This is what is searched for media references.
+ */
+function fMcRemainText() {
+    $tText = '';
+    foreach (fMcAllIds(array('post', 'page')) as $tId) {
+        $tPost = get_post($tId);
+        if ($tPost) {
+            $tText .= $tPost->post_content . "\n"
+                . $tPost->post_excerpt . "\n";
+        }
+    }
+    return $tText;
+}
+
+/*
+ * Attachment IDs that are never deleted: the site icon, the site
+ * logo, and the header and background images. Deleting these would
+ * break the look of the core site.
+ */
+function fMcForcedKeepMedia() {
+    $tKeep = array();
+    $tKeep[] = (int) get_option('site_icon');
+    $tKeep[] = (int) get_option('site_logo');
+    $tKeep[] = (int) get_theme_mod('custom_logo');
+
+    $tData = get_theme_mod('header_image_data');
+    if (is_object($tData) && ! empty($tData->attachment_id)) {
+        $tKeep[] = (int) $tData->attachment_id;
+    }
+    foreach (array('header_image', 'background_image') as $tMod) {
+        $tUrl = get_theme_mod($tMod);
+        if (! empty($tUrl) && $tUrl !== 'remove-header') {
+            $tKeep[] = (int) attachment_url_to_postid($tUrl);
+        }
+    }
+
+    return array_filter($tKeep);
+}
+
+/*
+ * Attachment IDs referenced by ID in the remaining posts and pages:
+ * featured images, "wp-image-NNN" classes, and gallery shortcodes.
+ * Being uploaded to a post (post_parent) does not count.
+ */
+function fMcUsedMediaIds($pText) {
+    $tUsed = array();
+    foreach (fMcAllIds(array('post', 'page')) as $tId) {
+        $tThumb = (int) get_post_thumbnail_id($tId);
+        if ($tThumb > 0) {
+            $tUsed[] = $tThumb;
+        }
+    }
+
+    $tMatch = array();
+    preg_match_all('/wp-image-(\d+)/', $pText, $tMatch);
+    foreach ($tMatch[1] as $tNum) {
+        $tUsed[] = (int) $tNum;
+    }
+
+    $tMatch = array();
+    preg_match_all('/\[gallery[^\]]*\bids=["\']([\d,\s]+)["\']/',
+        $pText, $tMatch);
+    foreach ($tMatch[1] as $tList) {
+        foreach (explode(',', $tList) as $tNum) {
+            $tUsed[] = (int) trim($tNum);
+        }
+    }
+
+    return $tUsed;
+}
+
+/*
+ * True if the attachment's file name appears anywhere in pText. The
+ * extension is dropped before searching, so the generated sizes
+ * ("photo-300x200.jpg") and the scaled copy ("photo-scaled.jpg")
+ * all count as a reference to "photo.jpg".
+ *
+ * This match is deliberately loose. A file that is not really used
+ * may be kept, which is better than deleting one that is.
+ */
+function fMcFileInText($pId, $pText) {
+    $tFile = get_post_meta($pId, '_wp_attached_file', true);
+    if (empty($tFile)) {
+        return false;
+    }
+    $tName = basename($tFile);
+    $tDot = strrpos($tName, '.');
+    if ($tDot !== false) {
+        $tName = substr($tName, 0, $tDot);
+    }
+    if ($tName === '') {
+        return false;
+    }
+    return strpos($pText, $tName) !== false;
+}
+
+/*
+ * Delete every media file that no remaining post or page refers to.
+ * The file and all of its generated sizes are removed. Returns the
+ * number of attachments deleted.
+ *
+ * Call this after the posts and pages have been deleted, so that
+ * media used only by them is seen as unused.
+ */
+function fMcPurgeMedia() {
+    $tText = fMcRemainText();
+    $tKeep = array_merge(fMcForcedKeepMedia(),
+        fMcUsedMediaIds($tText));
+    $tCount = 0;
+    foreach (fMcAllMediaIds() as $tId) {
+        if (in_array($tId, $tKeep)) {
+            continue;
+        }
+        if (fMcFileInText($tId, $tText)) {
+            continue;
+        }
+        if (wp_delete_attachment($tId, true)) {
+            $tCount++;
+        }
+    }
+    return $tCount;
+}
+
+/*
  * Read one textarea from POST, unslashed and sanitized.
  */
 function fMcPostText($pName) {
@@ -288,11 +428,13 @@ function fMcHandlePost() {
         $tNum = fMcDeleteUrls($gMcDelPost . "\n" . $gMcDelPage,
             $tBad);
         $tRev = fMcPurgeRevisions();
+        $tMedia = fMcPurgeMedia();
         $gMcDelPost = '';
         $gMcDelPage = '';
         $gMcNotice[] = array('notice-success',
-            sprintf('Deleted %d posts and pages, and %d revisions'
-                . ' from what remains.', $tNum, $tRev));
+            sprintf('Deleted %d posts and pages, %d revisions from'
+                . ' what remains, and %d unused media files.',
+                $tNum, $tRev, $tMedia));
     }
 
     if (! empty($tBad)) {
@@ -325,14 +467,15 @@ function fMcRenderPage() {
         $gMcDelPage = '';
     }
     $tConfirm = 'Permanently delete every post and page listed in'
-        . ' the Delete Posts and Delete Pages boxes? This cannot be'
-        . ' undone.';
+        . ' the Delete Posts and Delete Pages boxes, and every media'
+        . ' file that is left unused? This cannot be undone.';
     ?>
     <div class="wrap">
         <h1>MakeCore <?php echo esc_html(cMcVersion); ?></h1>
         <p>List the posts and pages to keep, then review what is
         left before deleting.<br> <b>Deletion is permanent,</b> and revisions
-        of the surviving posts and pages are removed as well.</p>
+        of the surviving posts and pages are removed as well, along
+        with any media file they no longer refer to.</p>
         <p><b>For help <a
         href="https://github.com/TurtleEngr/WP-make-core/blob/main/README.md"
         target="_blank">Click Here</a></b></p>
