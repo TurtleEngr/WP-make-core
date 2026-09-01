@@ -1,22 +1,21 @@
 <?php
 /**
  * Plugin Name: MakeCore
- * Plugin URI: TBD
- * Description: Delete posts and pages except those on a keep lists, to
- *              reduce a site to a "core" ready for hand-off.
- *              WARNING: The Delete button removes posts and pages
- *              permanently.  There is no undo. Back up the database
- *              first.
- * Version:     0.2
+ * Plugin URI: https://github.com/TurtleEngr/WP-make-core/tree/main
+ * Description: Make the current WordPress site ready to be a core site.
+ * Version:     VERSION
+ * Text Domain: makecore
  * Author:      TurtleEngr
+ * Author URI: https://github.com/TurtleEngr
  * License:     GPL-2.0
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-define('cMcVersion', '0.2');
+define('cMcVersion', 'VERSION');
 define('cMcOption', 'makecore_keep_lists');
 define('cMcCap', 'manage_options');
 define('cMcNonce', 'makecore_action');
