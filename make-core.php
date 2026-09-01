@@ -121,6 +121,24 @@ function fMcResolveUrl($pUrl) {
 }
 
 /**
+ * Strip the scheme and domain from a URL, leaving the path. Any
+ * query string is kept, so plain permalinks ("/?p=12") still
+ * resolve. For example:
+ *   https://example.com/2026/05/my-post/  ->  /2026/05/my-post/
+ */
+function fMcUrlPath($pUrl) {
+    $tPath = parse_url($pUrl, PHP_URL_PATH);
+    if (empty($tPath)) {
+        $tPath = '/';
+    }
+    $tQuery = parse_url($pUrl, PHP_URL_QUERY);
+    if (! empty($tQuery)) {
+        $tPath .= '?' . $tQuery;
+    }
+    return $tPath;
+}
+
+/**
  * Every ID of the given post types, in all statuses. pType is an
  * array, such as array('post') or array('post', 'page').
  */
@@ -158,8 +176,8 @@ function fMcKeepIds($pText, $pType, &$pBad) {
 }
 
 /**
- * Build the delete list for one type: every URL of type pType that
- * is not on the matching keep list, sorted by URL.
+ * Build the delete list for one type: the path of every item of
+ * type pType that is not on the matching keep list, sorted by path.
  */
 function fMcMakeList($pKeepText, $pType, &$pBad) {
     $tKeep = array_merge(fMcKeepIds($pKeepText, $pType, $pBad),
@@ -169,7 +187,7 @@ function fMcMakeList($pKeepText, $pType, &$pBad) {
         if (in_array($tId, $tKeep)) {
             continue;
         }
-        $tOut[] = get_permalink($tId);
+        $tOut[] = fMcUrlPath(get_permalink($tId));
     }
     sort($tOut);
     return implode("\n", $tOut);
@@ -340,8 +358,9 @@ function fMcRenderPage() {
                 echo esc_textarea($tKeepPage); ?></textarea>
 
             <h2>Delete Posts</h2>
-            <p class="description">List fills this box with every
-            post not kept. Edit it if you want, Delete acts on
+            <p class="description">List fills this box with the
+            path of every post not kept, one per line, without the
+            domain name. Edit it if you want, Delete acts on
             exactly what is here.</p>
             <textarea name="mcDelPosts" rows="15" cols="100"
                 class="large-text code"
@@ -349,8 +368,9 @@ function fMcRenderPage() {
                 echo esc_textarea($gMcDelPost); ?></textarea>
 
             <h2>Delete Pages</h2>
-            <p class="description">List fills this box with every
-            page not kept. Edit it if you want, Delete acts on
+            <p class="description">List fills this box with the
+            path of every page not kept, one per line, without the
+            domain name. Edit it if you want, Delete acts on
             exactly what is here.</p>
             <textarea name="mcDelPages" rows="15" cols="100"
                 class="large-text code"
