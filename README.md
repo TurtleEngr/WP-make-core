@@ -31,8 +31,8 @@ Work flow:
 5.  Repeat steps 3 and 4 until the Delete lists look OK. DO NOT CLICK ON
     THE Delete button.
 
-6.  Using you hosting provider\'s process, copy you main site to a
-    \"test\" site. All the other steps are done on the test site copy.
+6.  Using your hosting provider\'s process, copy your main site to a
+    \"test\" site. ALL THE OTHER STEPS ARE DONE ON THE TEST SITE COPY.
 
 7.  Go to Settings -\> MakeCore. With blank Keep text boxes, click on
     the List button.
