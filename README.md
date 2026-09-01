@@ -1,0 +1,48 @@
+# make-core
+
+![version](https://img.shields.io/badge/version-0.2.0-orange.svg)
+
+![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
+
+Make the current WordPress site ready to be a core site.
+
+## Installation
+
+Source: <https://moria.whyayh.com/rel/released/software/own/make-core>
+
+1.  Download the makecore-0.2.0.zip file.
+2.  Use Add Plugins, Upload Plugin, Install, Activate
+
+## How do I use this plugin?
+
+Work flow:
+
+1.  Install plugin to main site.
+
+2.  Go to Settings -\> MakeCore. With blank Keep text boxes, click on
+    the List button (only).
+
+3.  Copy the URIs listed in the Delete Posts and Delete Pages text
+    boxes, to an editor. Delete the ones the should be deleted.
+
+4.  Copy the URIs from the editor tot the Keep text boxes. Click on the
+    List button (only).
+
+5.  Repeat steps 3 and 4 until the Delete lists look OK. DO NOT CLICK ON
+    THE Delete button.
+
+6.  Using you hosting provider\'s process, copy you main site to a
+    \"test\" site. All the other steps are done on the test site copy.
+
+7.  Go to Settings -\> MakeCore. With blank Keep text boxes, click on
+    the List button.
+
+8.  Verify the lists in the Delete text boxes. Adjust the Keep text
+    boxes as needed. If changed, repeat step 7 and 8.
+
+9.  Click on the Delete button:
+
+    -   You will be prompted, with: Are you sure?
+    -   The URLs in the List boxes will be deleted
+    -   Revisions will be removed from remaining pages and posts
+    -   Media files that are not referenced will be deleted
