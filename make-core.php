@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Plugin Name: MakeCore
  * Plugin URI: https://github.com/TurtleEngr/WP-make-core/tree/main
  * Description: Make the current WordPress site ready to be a core site.
@@ -26,7 +26,7 @@ $gMcDelPage = null;    // Contents of the "Delete Pages" box
 
 add_action('admin_menu', 'fMcAddMenu');
 
-/**
+/*
  * Add the MakeCore page under the Settings menu.
  */
 function fMcAddMenu() {
@@ -34,7 +34,7 @@ function fMcAddMenu() {
         'fMcRenderPage');
 }
 
-/**
+/*
  * Post and page statuses MakeCore considers. Includes trash.
  */
 function fMcStatusList() {
@@ -42,7 +42,7 @@ function fMcStatusList() {
         'trash');
 }
 
-/**
+/*
  * IDs that are never listed or deleted: the static front page and
  * the posts page, if they are set.
  */
@@ -59,7 +59,7 @@ function fMcForcedKeep() {
     return $tKeep;
 }
 
-/**
+/*
  * Split textarea text into a list of trimmed URLs. Blank lines and
  * lines starting with "#" are ignored.
  */
@@ -75,7 +75,7 @@ function fMcParseUrls($pText) {
     return $tList;
 }
 
-/**
+/*
  * Look up a post or page ID by its slug, in any status. Used for
  * drafts and trashed items, which url_to_postid() cannot resolve.
  */
@@ -98,7 +98,7 @@ function fMcSlugToId($pUrl) {
     return $tId ? (int) $tId : 0;
 }
 
-/**
+/*
  * Resolve one URL to a post or page ID. Returns 0 if not found.
  */
 function fMcResolveUrl($pUrl) {
@@ -120,7 +120,7 @@ function fMcResolveUrl($pUrl) {
     return fMcSlugToId($pUrl);
 }
 
-/**
+/*
  * Strip the scheme and domain from a URL, leaving the path. Any
  * query string is kept, so plain permalinks ("/?p=12") still
  * resolve. For example:
@@ -138,7 +138,7 @@ function fMcUrlPath($pUrl) {
     return $tPath;
 }
 
-/**
+/*
  * Every ID of the given post types, in all statuses. pType is an
  * array, such as array('post') or array('post', 'page').
  */
@@ -153,7 +153,7 @@ function fMcAllIds($pType) {
     ));
 }
 
-/**
+/*
  * Resolve keep-list text to IDs of type pType ('post' or 'page').
  * URLs that do not resolve, or that resolve to the other type, are
  * added to pBad.
@@ -175,7 +175,7 @@ function fMcKeepIds($pText, $pType, &$pBad) {
     return $tIds;
 }
 
-/**
+/*
  * Build the delete list for one type: the path of every item of
  * type pType that is not on the matching keep list, sorted by path.
  */
@@ -193,7 +193,7 @@ function fMcMakeList($pKeepText, $pType, &$pBad) {
     return implode("\n", $tOut);
 }
 
-/**
+/*
  * Permanently delete the posts and pages named in pText. Returns the
  * number deleted. Lines that could not be used are added to pBad.
  */
@@ -224,7 +224,7 @@ function fMcDeleteUrls($pText, &$pBad) {
     return $tCount;
 }
 
-/**
+/*
  * Delete every revision of the remaining posts and pages. Returns
  * the number of revisions deleted.
  */
@@ -242,7 +242,7 @@ function fMcPurgeRevisions() {
     return $tCount;
 }
 
-/**
+/*
  * Read one textarea from POST, unslashed and sanitized.
  */
 function fMcPostText($pName) {
@@ -252,7 +252,7 @@ function fMcPostText($pName) {
     return sanitize_textarea_field(wp_unslash($_POST[$pName]));
 }
 
-/**
+/*
  * Handle the List and Delete buttons. Sets the globals used by
  * fMcRenderPage().
  */
@@ -301,7 +301,7 @@ function fMcHandlePost() {
     }
 }
 
-/**
+/*
  * Draw the MakeCore settings page.
  */
 function fMcRenderPage() {
@@ -331,9 +331,9 @@ function fMcRenderPage() {
     <div class="wrap">
         <h1>MakeCore <?php echo esc_html(cMcVersion); ?></h1>
         <p>List the posts and pages to keep, then review what is
-        left before deleting. Deletion is permanent, and revisions
-        of the surviving posts and pages are removed as well. Back
-        up the database first.</p>
+        left before deleting.<br> <b>Deletion is permanent,</b> and revisions
+        of the surviving posts and pages are removed as well.</p>
+        <p>For help <a href="" target="_blank">Click Here</a></p>
 
         <?php foreach ($gMcNotice as $tNote) { ?>
             <div class="notice <?php echo esc_attr($tNote[0]); ?>">
@@ -358,10 +358,9 @@ function fMcRenderPage() {
                 echo esc_textarea($tKeepPage); ?></textarea>
 
             <h2>Delete Posts</h2>
-            <p class="description">List fills this box with the
-            path of every post not kept, one per line, without the
-            domain name. Edit it if you want, Delete acts on
-            exactly what is here.</p>
+            <p class="description">List fills this box with the path
+            of every post not kept, one per line.  Edit it if you
+            want, Delete acts on exactly what is here.</p>
             <textarea name="mcDelPosts" rows="15" cols="100"
                 class="large-text code"
                 style="overflow:auto;"><?php
