@@ -1,6 +1,6 @@
 # make-core
 
-![version](https://img.shields.io/badge/version-0.4.3-orange.svg)
+![version](https://img.shields.io/badge/version-0.4.4-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
@@ -10,7 +10,7 @@ Make the current WordPress site ready to be a core site.
 
 Source: <https://moria.whyayh.com/rel/released/software/own/make-core>
 
-1.  Download the makecore-0.4.3.zip file.
+1.  Download the makecore-0.4.4.zip file.
 2.  Use Add Plugins, Upload Plugin, Install, Activate
 
 ## How do I use this plugin?
@@ -46,3 +46,27 @@ Work flow:
     -   The URLs in the List boxes will be deleted
     -   Revisions will be removed from remaining pages and posts
     -   Media files that are not referenced will be deleted
+
+10. If Imagely plugin is installed:
+
+    -   Delete all Galleries
+    -   Delete all Albums
+    -   Delete all Tags
+
+11. Replace front page with \"Core Home\"
+
+    -   Duplicate \"Core Home\" and edit it.
+    -   Change title to \"Home\"
+    -   Change slug to \"Home\"
+    -   Save
+    -   Settings -\> Reading, Set Homepage to \"Home\"
+
+12. Appearance -\> Customize
+
+    -   Remove Logo
+    -   Change Site Identity to \"Core Sample\"
+
+13. Edit *change-log*
+
+    -   Remove all of the entries.
+    -   Add Date for when this core was created.
