@@ -69,8 +69,8 @@ Work flow:
 5.  Remove API keys and other personal stuff
     -   Remove Claude API
     -   Remove personal IPs from Wordfront and AES
-    -   Change Wordfront free license to ???
-    -   Remove USP Pro plugin lifetime license
+    -   Remove Wordfront free license
+    -   Remove USP Pro plugin lifetime license (url? TBD)
     -   Remove FastBots plugin
 6.  Remove all users
     -   Create CivicsCoreAdmin@gmail.com (save password)

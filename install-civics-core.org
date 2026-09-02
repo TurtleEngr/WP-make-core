@@ -12,11 +12,39 @@
   this user.
 
 ** Hosting account setup
+These are general directions. Each hosting provider has different
+setup directions. Look at their directions for the details.
+
 + We recommend https://www.hostinger.com/
 + You will need to sign up for a minimal plan, where you can build
   2 to 3 WordPress sites.
-+ You'll need to get a domian name. Recommendations:
++ You'll need to get a domian name. Recommendations for naming:
   + Main site: YOURORG.org or YOURORG.com or YOURORG.info
-  + Test site: test-YOURDOMAIN
-  + Core site: core-YOURDOMAIN
-    
+  + Test site: test.YOURDOMAIN
+  + Core site: core.YOURDOMAIN
++ Note: you only need to buy one domain; test and core show above are
+  "sub-domains" of YOURDOMAIN. You only need to verify they are part
+  of the https certificate for YOURDOMAIN.
++ Create an empty WordPress site.
++ Import:
+  + civics-core-files-1.0.tar.gz
+  + civics-core-db-1.0.sql.gz
+
+** First time setup
++ Point your browser to YOURDOMAIN. You should see the minimal site.
++ Click on the "Log In" menu, and fill ing the fields:
+  + User: CivicsCoreAdmin@gmail.com
+  + Password: (the one you were given)
++ You should now see the admin page
++ Changes:
+  + Add an admin user for yourself. Verify you can login with it.
+  + Remove the CivicsCoreAdmin@gmail.com user - this is REQUIRED
+  + Change the site title, icon, see Settings -> General
+  + Change the title of the home page.
+  + Create more users as needed.
++ Get licenses and keys
+  + Claude API key - see docs at: [[https://github.com/TurtleEngr/WP-Claude-Interface/blob/develop/README.md][README.md]]
+  + Get free Wordfront plugin license for your domain (url? TBD)
+  + Get a USP Pro plugin license, if you want to use that (url? TBD)
+
+TBD - more directions to come.
