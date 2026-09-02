@@ -65,3 +65,8 @@ Work flow:
 13. Edit /change-log/
     + Remove all of the entries.
     + Add Date for when this core was created.
+
+14. Remove all users, but leave one admin user.
+    + TBD: Can a dummy admin user be created, then when the core is
+      installed, the user is prompted for an admin user
+      email/password.
