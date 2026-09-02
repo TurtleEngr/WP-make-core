@@ -1,8 +1,8 @@
 # make-core
 
-![version](https://img.shields.io/badge/version-0.4.6-orange.svg)
+[version](https://img.shields.io/badge/version-0.4.6-orange.svg)
 
-![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
+[WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
 Make the current WordPress site ready to be a core site.
 

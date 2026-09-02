@@ -1,0 +1,22 @@
+* Install Civics Core
++ Version: VERSION
+
+** Get CivicsCore backup files
++ Google Drive: TBD
+  + civics-core-files-1.0.tar.gz
+  + civics-core-db-1.0.sql.gz
+
+** Verify you can login to CivicsCoreAdmin@gmail.com
++ You will be given the password to this.
++ Also you will be given the password to the WordPress account for
+  this user.
+
+** Hosting account setup
++ We recommend https://www.hostinger.com/
++ You will need to sign up for a minimal plan, where you can build
+  2 to 3 WordPress sites.
++ You'll need to get a domian name. Recommendations:
+  + Main site: YOURORG.org or YOURORG.com or YOURORG.info
+  + Test site: test-YOURDOMAIN
+  + Core site: core-YOURDOMAIN
+    

@@ -68,11 +68,23 @@ Work flow:
    + Remove all of the entries.
    + Add Date for when this core was created.
 
-5. Remove all users, but leave one admin user.
-    + TBD: Can a dummy admin user be created, then when the core is
-      installed, the user is prompted for an admin user
-      email/password.
-
+5. Remove API keys and other personal stuff
+   + Remove Claude API
+   + Remove personal IPs from Wordfront and AES
+   + Change Wordfront free license to ???
+   + Remove USP Pro plugin lifetime license
+   + Remove FastBots plugin
+     
+6. Remove all users
+    + Create CivicsCoreAdmin@gmail.com (save password)
+    + Create WP admin account CivicsCoreAdmin@gmail.com (save password)
+    + Remove all user except leave CivicsCoreAdmin@gmail.com
+    + When the import files are given to others, the passoword to this
+      gmail account and the WordPress user will be given out.
+    + After the WP site is imported, an admin account should be setup
+      immediately and the WP CivicsCoreAdmin@gmail.com account should
+      be deleted.
+     
 ** Export the Core (Hostinger)
 
 + Log in to your Hostinger hPanel.
@@ -81,3 +93,9 @@ Work flow:
   backups, click Select.
 + Choose the most recent date from the dropdown menu and click Next step.
 + Click on Website backup. This includes all files and DB.
++ Download and rename the backups and copy them to Google Drive.
+  + civics-core-files-VER.tar.gz
+  + civics-core-db-VER.sql.gz
+
+** Installing the core
++ See: install-civics-core.md

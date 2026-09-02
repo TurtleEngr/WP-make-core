@@ -14,6 +14,10 @@ mBuildList = \
     dist/make-core/readme.txt \
     dist/make-core/LICENSE
 
+mDocList = \
+    README.md \
+    install-civics-core.md
+
 mServer = moria.whyayh.com
 mPubDev = /rel/development/software/own/$(mProj)
 mPubRel = /rel/released/software/own/$(mProj)
@@ -33,14 +37,14 @@ update :
 	git co develop
 	git pull origin develop
 
-build : dist-clean update README.md $(mProduct)
+build : dist-clean update $(mDocList) $(mProduct)
 	@echo 'If OK, make save'
 
 save development : check-dev
 	-git ci -am Updated
 	git push origin develop
 	-ssh $(mServer) mkdir -p $(mPubDev)
-	rsync -a README.org readme.txt dist/make-core-$$(cat VERSION).zip $(mServer):$(mPubDev)
+	rsync -a $(mDocList) readme.txt dist/make-core-$$(cat VERSION).zip $(mServer):$(mPubDev)
 	cp VERSION VERSION-dev
 	git ci -am Updated
 	git push origin develop
@@ -55,7 +59,7 @@ publish release : check-rel
 	git push --tags origin main
 	git co develop
 	-ssh $(mServer) mkdir -p $(mPubRel)
-	rsync -a README.org readme.txt dist/make-core-$$(cat VERSION).zip $(mServer):$(mPubRel)
+	rsync -a $(mDocList) readme.txt dist/make-core-$$(cat VERSION).zip $(mServer):$(mPubRel)
 	cp VERSION VERSION-rel
 	git ci -am Updated
 	git push origin develop
@@ -85,6 +89,10 @@ README.md : README.org VERSION
 	sed -i "s/VERSION/$$(cat VERSION)/" $@
 	sed -i 's/^\[version]/![version]/' $@
 	sed -i 's/^\[WordPress]/![WordPress]/' $@
+
+install-civics-core.md : install-civics-core.org VERSION
+	pandoc -f org -t markdown <README.org >$@
+	sed -i "s/VERSION/$$(cat VERSION)/" $@
 
 check-dev :
 	if diff -q VERSION VERSION-dev >/dev/null 2>&1; then \
