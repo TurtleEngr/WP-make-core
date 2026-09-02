@@ -91,7 +91,7 @@ README.md : README.org VERSION
 	sed -i 's/^\[WordPress]/![WordPress]/' $@
 
 install-civics-core.md : install-civics-core.org VERSION
-	pandoc -f org -t markdown <README.org >$@
+	pandoc -f org -t markdown <install-civics-core.org >$@
 	sed -i "s/VERSION/$$(cat VERSION)/" $@
 
 check-dev :

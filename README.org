@@ -98,4 +98,5 @@ Work flow:
   + civics-core-db-VER.sql.gz
 
 ** Installing the core
-+ See: install-civics-core.md
++ See: [[https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md][install-civics-core.md]]
+  

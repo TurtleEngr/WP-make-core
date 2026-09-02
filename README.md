@@ -98,4 +98,5 @@ Work flow:
 
 ## Installing the core
 
--   See: install-civics-core.md
+-   See:
+    [install-civics-core.md](https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md)
