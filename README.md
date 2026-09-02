@@ -1,6 +1,6 @@
 # make-core
 
-![version](https://img.shields.io/badge/version-0.4.5-orange.svg)
+![version](https://img.shields.io/badge/version-0.4.6-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
@@ -8,9 +8,10 @@ Make the current WordPress site ready to be a core site.
 
 ## Installation
 
-Source: <https://moria.whyayh.com/rel/released/software/own/make-core>
+Source:
+<https://moria.whyayh.com/rel/released/software/own/WP-make-core/>
 
-1.  Download the makecore-0.4.5.zip file.
+1.  Download the makecore-0.4.6.zip file.
 2.  Use Add Plugins, Upload Plugin, Install, Activate
 
 ## How do I use this plugin?
