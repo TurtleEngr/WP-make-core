@@ -1,6 +1,6 @@
 # make-core
 
-![version](https://img.shields.io/badge/version-0.4.6-orange.svg)
+![version](https://img.shields.io/badge/version-0.5.0-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
@@ -11,7 +11,7 @@ Make the current WordPress site ready to be a core site.
 Source:
 <https://moria.whyayh.com/rel/released/software/own/WP-make-core/>
 
-1.  Download the makecore-0.4.6.zip file.
+1.  Download the makecore-0.5.0.zip file.
 2.  Use Add Plugins, Upload Plugin, Install, Activate
 
 ## How do I use this plugin?
@@ -73,15 +73,14 @@ Work flow:
     -   Remove USP Pro plugin lifetime license (url? TBD)
     -   Remove FastBots plugin
 6.  Remove all users
-    -   Create CivicsCoreAdmin@gmail.com (save password)
-    -   Create WP admin account CivicsCoreAdmin@gmail.com (save
-        password)
-    -   Remove all user except leave CivicsCoreAdmin@gmail.com
+    -   Create CivCoreAdmin@gmail.com (save password)
+    -   Create WP admin account CivCoreAdmin@gmail.com (save password)
+    -   Remove all user except leave CivCoreAdmin@gmail.com
     -   When the import files are given to others, the passoword to this
         gmail account and the WordPress user will be given out.
     -   After the WP site is imported, an admin account should be setup
-        immediately and the WP CivicsCoreAdmin@gmail.com account should
-        be deleted.
+        immediately and the WP CivCoreAdmin@gmail.com account should be
+        deleted.
 
 ## Export the Core (Hostinger)
 
@@ -93,10 +92,10 @@ Work flow:
     step.
 -   Click on Website backup. This includes all files and DB.
 -   Download and rename the backups and copy them to Google Drive.
-    -   civics-core-files-VER.tar.gz
-    -   civics-core-db-VER.sql.gz
+    -   Civ-core-files-VER.tar.gz
+    -   Civ-core-db-VER.sql.gz
 
 ## Installing the core
 
 -   See:
-    [install-civics-core.md](https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md)
+    [install-Civ-core.md](https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md)

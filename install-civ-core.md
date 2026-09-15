@@ -1,14 +1,14 @@
-# Install Civics Core
+# Install Civ Core
 
--   Version: 0.4.6
+-   Version: 0.5.0
 
-## Get CivicsCore backup files
+## Get CivCore backup files
 
 -   Google Drive: TBD
-    -   civics-core-files-1.0.tar.gz
-    -   civics-core-db-1.0.sql.gz
+    -   civ-core-files-1.0.tar.gz
+    -   civ-core-db-1.0.sql.gz
 
-## Verify you can login to CivicsCoreAdmin@gmail.com
+## Verify you can login to CivCoreAdmin@gmail.com
 
 -   You will be given the password to this.
 -   Also you will be given the password to the WordPress account for
@@ -31,19 +31,19 @@ directions. Look at their directions for the details.
     of the https certificate for YOURDOMAIN.
 -   Create an empty WordPress site.
 -   Import:
-    -   civics-core-files-1.0.tar.gz
-    -   civics-core-db-1.0.sql.gz
+    -   civ-core-files-1.0.tar.gz
+    -   civ-core-db-1.0.sql.gz
 
 ## First time setup
 
 -   Point your browser to YOURDOMAIN. You should see the minimal site.
 -   Click on the \"Log In\" menu, and fill ing the fields:
-    -   User: CivicsCoreAdmin@gmail.com
+    -   User: CivCoreAdmin@gmail.com
     -   Password: (the one you were given)
 -   You should now see the admin page
 -   Changes:
     -   Add an admin user for yourself. Verify you can login with it.
-    -   Remove the CivicsCoreAdmin@gmail.com user - this is REQUIRED
+    -   Remove the CivCoreAdmin@gmail.com user - this is REQUIRED
     -   Change the site title, icon, see Settings -\> General
     -   Change the title of the home page.
     -   Create more users as needed.

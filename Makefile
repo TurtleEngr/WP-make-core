@@ -16,7 +16,7 @@ mBuildList = \
 
 mDocList = \
     README.md \
-    install-civics-core.md
+    install-civ-core.md
 
 mServer = moria.whyayh.com
 mPubDev = /rel/development/software/own/$(mProj)
@@ -90,8 +90,8 @@ README.md : README.org VERSION
 	sed -i 's/^\[version]/![version]/' $@
 	sed -i 's/^\[WordPress]/![WordPress]/' $@
 
-install-civics-core.md : install-civics-core.org VERSION
-	pandoc -f org -t markdown <install-civics-core.org >$@
+install-civ-core.md : install-civ-core.org VERSION
+	pandoc -f org -t markdown <install-civ-core.org >$@
 	sed -i "s/VERSION/$$(cat VERSION)/" $@
 
 check-dev :

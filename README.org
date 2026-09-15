@@ -76,13 +76,13 @@ Work flow:
    + Remove FastBots plugin
      
 6. Remove all users
-    + Create CivicsCoreAdmin@gmail.com (save password)
-    + Create WP admin account CivicsCoreAdmin@gmail.com (save password)
-    + Remove all user except leave CivicsCoreAdmin@gmail.com
+    + Create CivCoreAdmin@gmail.com (save password)
+    + Create WP admin account CivCoreAdmin@gmail.com (save password)
+    + Remove all user except leave CivCoreAdmin@gmail.com
     + When the import files are given to others, the passoword to this
       gmail account and the WordPress user will be given out.
     + After the WP site is imported, an admin account should be setup
-      immediately and the WP CivicsCoreAdmin@gmail.com account should
+      immediately and the WP CivCoreAdmin@gmail.com account should
       be deleted.
      
 ** Export the Core (Hostinger)
@@ -94,8 +94,8 @@ Work flow:
 + Choose the most recent date from the dropdown menu and click Next step.
 + Click on Website backup. This includes all files and DB.
 + Download and rename the backups and copy them to Google Drive.
-  + civics-core-files-VER.tar.gz
-  + civics-core-db-VER.sql.gz
+  + Civ-core-files-VER.tar.gz
+  + Civ-core-db-VER.sql.gz
 
 ** Installing the core
-+ See: [[https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md][install-civics-core.md]]
++ See: [[https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md][install-Civ-core.md]]
