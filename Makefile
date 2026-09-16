@@ -15,8 +15,11 @@ mBuildList = \
     dist/make-core/LICENSE
 
 mDocList = \
+    README.html \
     README.md \
-    install-civ-core.md
+    install-civ-core.html \
+    install-civ-core.md \
+    install-civ-core.org
 
 mServer = moria.whyayh.com
 mPubDev = /rel/development/software/own/$(mProj)
@@ -46,6 +49,7 @@ save development : check-dev
 	-ssh $(mServer) mkdir -p $(mPubDev)
 	rsync -a $(mDocList) readme.txt dist/make-core-$$(cat VERSION).zip $(mServer):$(mPubDev)
 	cp VERSION VERSION-dev
+	incver.sh -p
 	git ci -am Updated
 	git push origin develop
 	@echo 'If OK, make publish'
@@ -61,8 +65,10 @@ publish release : check-rel
 	-ssh $(mServer) mkdir -p $(mPubRel)
 	rsync -a $(mDocList) readme.txt dist/make-core-$$(cat VERSION).zip $(mServer):$(mPubRel)
 	cp VERSION VERSION-rel
+	incver.sh -p
 	git ci -am Updated
 	git push origin develop
+	git ci -am Updated
 	@echo 'If done, make dist-clean'
 
 clean :
@@ -84,11 +90,19 @@ $(mProduct) : $(mBuildList)
 	cd dist; zip -r make-core-$$(cat ../VERSION).zip make-core
 	-touch $@
 
+README.html : README.org VERSION
+	org2html.sh -i README.org -o $@ -s 2
+	sed -i "s/VERSION/$$(cat VERSION)/" $@
+
 README.md : README.org VERSION
 	pandoc -f org -t markdown <README.org >$@
 	sed -i "s/VERSION/$$(cat VERSION)/" $@
 	sed -i 's/^\[version]/![version]/' $@
 	sed -i 's/^\[WordPress]/![WordPress]/' $@
+
+install-civ-core.html : install-civ-core.org VERSION
+	org2html.sh -i install-civ-core.org -o $@ -s 2
+	sed -i "s/VERSION/$$(cat VERSION)/" $@
 
 install-civ-core.md : install-civ-core.org VERSION
 	pandoc -f org -t markdown <install-civ-core.org >$@

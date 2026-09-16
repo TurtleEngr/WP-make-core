@@ -1,4 +1,4 @@
-=== makecore ===
+=== make-core ===
 Description: Make the current WordPress site ready to be a core site.
 Contributors: turtle-engr
 Tags: plugin, make-core, cleanup
@@ -11,7 +11,7 @@ License URI: <http://www.gnu.org/licenses/gpl-2.0.html>
 == Description ==
 
 Make the current WordPress site ready to be a core site. ONLY DO
-THIS ON A COPY OF YOU MAIN SITE. However you can install this on
+THIS ON A *COPY* OF YOU MAIN SITE. However, you can install this on
 your main site, so you can define the URLs for the pages and posts
 to keep (then deactivate the plugin).
 
@@ -33,10 +33,14 @@ see: https://github.com/TurtleEngr/WP-make-core/tree/main
 
 Source: https://moria.whyayh.com/rel/released/software/own/make-core
 
-1. Download the makecore-VERSION.zip file.
+1. Download the make-core-VERSION.zip file.
 2. Use Add Plugins, Upload Plugin, Install, Activate
 
 == Changelog ==
+
+### 0.5.0
+
+Renamed Civics-Core to Civ-Core
 
 ### 0.2
 

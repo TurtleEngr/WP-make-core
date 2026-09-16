@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type"
+        content="text/html; charset=utf-8" />
+  <title>make-core</title>
+  <style type="text/css">
+  
+  body {
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: Times, serif;
+    font-size: 110%;
+  }
+
+  h1, h2, h3, h4, h5, h6, p {
+    font-family: Times, serif;
+  }
+
+  dt {
+    font-weight: bold
+  }
+
+  pre {
+    font-family: Courier New, monospace;
+    font-size: 100%;
+    font-weight: bold
+  }
+
+  ins {
+    color: green;
+  }
+
+  del {
+    color: red;
+  }
+
+  dt {
+    font-weight: bold
+  }
+
+  p.red {
+    color: red;
+  }
+
+  span.red {
+    color: red;
+  }
+
+  div.red {
+    color: red;
+  }
+
+  blockquote {
+    margin-left: 5%; 
+    margin-right: 5%; 
+    font-family: Times, serif; 
+    font-style: italic; 
+    text-align: left; 
+    text-indent: 0px;
+  }
+  
+  </style>
+</head>
+<body>
+  <hr />
+  <h1 id="make-core">make-core</h1>
+  <p><a href=
+  "https://img.shields.io/badge/version-VERSION-orange.svg">version</a></p>
+  <p><a href=
+  "https://img.shields.io/badge/WordPress-Compatible-blue.svg">WordPress</a></p>
+  <p>Make the current WordPress site ready to be a core site.</p>
+  <hr />
+  <h2 id="installation">Installation</h2>
+  <p>Source: <a href=
+  "https://moria.whyayh.com/rel/released/software/own/WP-make-core/">https://moria.whyayh.com/rel/released/software/own/WP-make-core/</a></p>
+  <ol>
+    <li>Download the make-core-VERSION.zip file.</li>
+    <li>Use Add Plugins, Upload Plugin, Install, Activate</li>
+  </ol>
+  <hr />
+  <h2 id="how-do-i-use-this-plugin">How do I use this plugin?</h2>
+  <p>Work flow:</p>
+  <ol>
+    <li>
+      <p>Install plugin to main site.</p>
+    </li>
+    <li>
+      <p>Go to Settings -&gt; MakeCore. With blank Keep text boxes, click on
+      the List button (only).</p>
+    </li>
+    <li>
+      <p>Copy the URIs listed in the Delete Posts and Delete Pages text
+      boxes, to an editor. Delete the ones the should be deleted.</p>
+    </li>
+    <li>
+      <p>Copy the URIs from the editor tot the Keep text boxes. Click on the
+      List button (only).</p>
+    </li>
+    <li>
+      <p>Repeat steps 3 and 4 until the Delete lists look OK. DO NOT CLICK ON
+      THE Delete button.</p>
+    </li>
+    <li>
+      <p>Using your hosting provider's process, copy your main site to a
+      "test" site. ALL THE OTHER STEPS ARE DONE ON THE TEST SITE COPY.</p>
+    </li>
+    <li>
+      <p>Go to Settings -&gt; MakeCore. With blank Keep text boxes, click on
+      the List button.</p>
+    </li>
+    <li>
+      <p>Verify the lists in the Delete text boxes. Adjust the Keep text
+      boxes as needed. If changed, repeat step 7 and 8.</p>
+    </li>
+    <li>
+      <p>Click on the Delete button:</p>
+      <ul>
+        <li>You will be prompted, with: Are you sure?</li>
+        <li>The URLs in the List boxes will be deleted</li>
+        <li>Revisions will be removed from remaining pages and posts</li>
+        <li>Media files that are not referenced will be deleted</li>
+      </ul>
+    </li>
+  </ol>
+  <hr />
+  <h2 id="manual-cleanup-steps">Manual Cleanup Steps</h2>
+  <ol>
+    <li>If Imagely plugin is installed:
+      <ul>
+        <li>Delete all Galleries</li>
+        <li>Delete all Albums</li>
+        <li>Delete all Tags</li>
+      </ul>
+    </li>
+    <li>Replace front page with "Core Home"
+      <ul>
+        <li>Duplicate "Core Home" and edit it.</li>
+        <li>Change title to "Home"</li>
+        <li>Change slug to "Home"</li>
+        <li>Save</li>
+        <li>Settings -&gt; Reading, Set Homepage to "Home"</li>
+      </ul>
+    </li>
+    <li>Appearance -&gt; Customize
+      <ul>
+        <li>Remove Logo</li>
+        <li>Change Site Identity to "Core Sample"</li>
+      </ul>
+    </li>
+    <li>Edit <em>change-log</em>
+      <ul>
+        <li>Remove all of the entries.</li>
+        <li>Add Date for when this core was created.</li>
+      </ul>
+    </li>
+    <li>Remove API keys and other personal stuff
+      <ul>
+        <li>Remove Claude API</li>
+        <li>Remove personal IPs from Wordfront and AES</li>
+        <li>Remove Wordfront free license</li>
+        <li>Remove USP Pro plugin lifetime license (url? TBD)</li>
+        <li>Remove FastBots plugin</li>
+      </ul>
+    </li>
+    <li>Remove all users
+      <ul>
+        <li>Create CivCoreAdmin@gmail.com (save password)</li>
+        <li>Create WP admin account CivCoreAdmin@gmail.com (save
+        password)</li>
+        <li>Remove all user except leave CivCoreAdmin@gmail.com</li>
+        <li>When the import files are given to others, the passoword to this
+        gmail account and the WordPress user will be given out.</li>
+        <li>After the WP site is imported, an admin account should be setup
+        immediately and the WP CivCoreAdmin@gmail.com account should be
+        deleted.</li>
+      </ul>
+    </li>
+  </ol>
+  <hr />
+  <h2 id="export-the-core-hostinger">Export the Core (Hostinger)</h2>
+  <ul>
+    <li>Log in to your Hostinger hPanel.</li>
+    <li>Go to Websites and click Manage next to your WordPress site.</li>
+    <li>On the left sidebar, navigate to Files -&gt; Backups.Under Files
+    backups, click Select.</li>
+    <li>Choose the most recent date from the dropdown menu and click Next
+    step.</li>
+    <li>Click on Website backup. This includes all files and DB.</li>
+    <li>Download and rename the backups and copy them to Google Drive.
+      <ul>
+        <li>Civ-core-files-VER.tar.gz</li>
+        <li>Civ-core-db-VER.sql.gz</li>
+      </ul>
+    </li>
+  </ul>
+  <hr />
+  <h2 id="installing-the-core">Installing the core</h2>
+  <ul>
+    <li>See: <a href=
+    "https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md">
+      install-Civ-core.md</a>
+    </li>
+  </ul>
+</body>
+</html>
