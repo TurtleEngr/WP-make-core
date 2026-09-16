@@ -64,7 +64,7 @@ blockquote {
 ```
 # make-core
 
-![version](https://img.shields.io/badge/version-0.5.0-orange.svg)
+![version](https://img.shields.io/badge/version-0.5.1-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
@@ -75,79 +75,109 @@ Make the current WordPress site ready to be a core site.
 Source:
 <https://moria.whyayh.com/rel/released/software/own/WP-make-core/>
 
-1.  Download the make-core-0.5.0.zip file.
+1.  Download the make-core-0.5.1.zip file.
 2.  Use Add Plugins, Upload Plugin, Install, Activate
 
 ## How do I use this plugin?
 
-Work flow:
+### Prepare
 
-1.  Install plugin to main site.
+1.  Install this plugin to your main WP site.
 
-2.  Go to Settings -\> MakeCore. With blank Keep text boxes, click on
-    the List button (only).
+2.  Add \"core\" pages and posts that will replace existing pages. For
+    example:
 
-3.  Copy the URIs listed in the Delete Posts and Delete Pages text
-    boxes, to an editor. Delete the ones the should be deleted.
+    -   Duplicate your front page to \"Core Home\" page, then delete all
+        links and reference that are specific to your site. Add links to
+        other \"core\" example pages and posts.
+    -   Example core posts can be created, but their status should be
+        \"private.\"
 
-4.  Copy the URIs from the editor tot the Keep text boxes. Click on the
-    List button (only).
+### Identify the pages and posts that should remain
 
-5.  Repeat steps 3 and 4 until the Delete lists look OK. DO NOT CLICK ON
-    THE Delete button.
+1.  Go to Settings -\> MakeCore. With blank Keep text boxes, click on
+    the \"List\" button (only).
 
-6.  Using your hosting provider\'s process, copy your main site to a
+2.  Copy the URIs listed in the Delete Posts and Delete Pages text
+    boxes, to a text editor. Delete the URIs that should be deleted.
+
+3.  Copy the URIs from the editor to the Keep text boxes. Click on the
+    \"List\" button (only).
+
+4.  Repeat steps 2 and 3 until the Delete lists look OK. **DO NOT CLICK
+    ON THE** \"Delete\" button.
+
+### Create the core pages and posts
+
+1.  Using your hosting provider\'s process, copy your main site to a
     \"test\" site. ALL THE OTHER STEPS ARE DONE ON THE TEST SITE COPY.
 
-7.  Go to Settings -\> MakeCore. With blank Keep text boxes, click on
-    the List button.
+2.  Sign in to the test site.
 
-8.  Verify the lists in the Delete text boxes. Adjust the Keep text
-    boxes as needed. If changed, repeat step 7 and 8.
+3.  Go to Settings -\> MakeCore. Click on the the \"List\" button.
 
-9.  Click on the Delete button:
+4.  Adjust the Keep text boxes as needed.
+
+5.  Repeat step 3 and 4, until Delete list is OK.
+
+6.  Click on the \"Delete\" button:
 
     -   You will be prompted, with: Are you sure?
-    -   The URLs in the List boxes will be deleted
+    -   The URIs in the List boxes will be deleted
     -   Revisions will be removed from remaining pages and posts
     -   Media files that are not referenced will be deleted
 
 ## Manual Cleanup Steps
 
-1.  If Imagely plugin is installed:
+-   **If Imagely plugin is installed:**
+
     -   Delete all Galleries
     -   Delete all Albums
     -   Delete all Tags
-2.  Replace front page with \"Core Home\"
+
+-   **Replace front page with \"Core Home\"**
+
     -   Duplicate \"Core Home\" and edit it.
     -   Change title to \"Home\"
     -   Change slug to \"Home\"
     -   Save
     -   Settings -\> Reading, Set Homepage to \"Home\"
-3.  Appearance -\> Customize
+
+-   **Make \"private\" example core posts \"public.\"**
+
+-   **Appearance -\> Customize**
+
     -   Remove Logo
     -   Change Site Identity to \"Core Sample\"
-4.  Edit *change-log*
+
+-   **Edit *change-log***
+
     -   Remove all of the entries.
     -   Add Date for when this core was created.
-5.  Remove API keys and other personal stuff
+
+-   **Remove API keys and other personal stuff**
+
     -   Remove Claude API
     -   Remove personal IPs from Wordfront and AES
     -   Remove Wordfront free license
-    -   Remove USP Pro plugin lifetime license (url? TBD)
+    -   Remove USP Pro plugin lifetime license (URL? TBD)
     -   Remove FastBots plugin
-6.  Remove all users
-    -   Create CivCoreAdmin@gmail.com (save password)
-    -   Create WP admin account CivCoreAdmin@gmail.com (save password)
+
+-   **Remove all users**
+
+    -   Create gmail CivCoreAdmin@gmail.com (save the password)
+    -   Create WP admin account CivCoreAdmin@gmail.com (save the
+        password)
     -   Remove all user except leave CivCoreAdmin@gmail.com
-    -   When the import files are given to others, the passoword to this
-        gmail account and the WordPress user will be given out.
+    -   When the import files are given to others, give them the gmail
+        account and the WordPress user names and passwords.
     -   After the WP site is imported, an admin account should be setup
-        immediately and the WP CivCoreAdmin@gmail.com account should be
+        immediately and the WP CivCoreAdmin@gmail.com account must be
         deleted.
 
 ## Export the Core (Hostinger)
 
+-   Make a backup of the \"test\" site (or wait until a backup is made).
 -   Log in to your Hostinger hPanel.
 -   Go to Websites and click Manage next to your WordPress site.
 -   On the left sidebar, navigate to Files -\> Backups.Under Files
@@ -162,4 +192,4 @@ Work flow:
 ## Installing the core
 
 -   See:
-    [install-Civ-core.md](https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civics-core.md)
+    [install-civ-core.html](https://github.com/TurtleEngr/WP-make-core/blob/develop/install-civ-core.md)

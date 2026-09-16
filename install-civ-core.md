@@ -1,8 +1,72 @@
+```{=html}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+<title>make-core</title>
+  <style type="text/css">
+body {
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: Times, serif;
+    font-size: 110%;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    font-family: Times, serif;
+}
+
+dt {
+    font-weight: bold
+}
+
+pre {
+    font-family: Courier New, monospace;
+    font-size: 100%;
+    font-weight: bold
+}
+
+ins {
+    color: green;
+}
+
+del {
+    color: red;
+}
+
+dt {
+    font-weight: bold
+}
+
+p.red {
+    color: red;
+}
+
+span.red {
+    color: red;
+}
+
+div.red {
+    color: red;
+}
+
+blockquote {
+    margin-left: 5%; 
+    margin-right: 5%; 
+    font-family: Times, serif; 
+    font-style: italic; 
+    text-align: left; 
+    text-indent: 0px;
+}
+  </style>
+</head>
+<body>
+```
 # Install Civ Core
 
--   Version: 0.5.0
+-   Version: 0.5.1
 
-## Get CivCore backup files
+## Get CivCore \"backup\" files
 
 -   Google Drive: TBD
     -   civ-core-files-1.0.tar.gz
@@ -43,7 +107,7 @@ directions. Look at their directions for the details.
 -   You should now see the admin page
 -   Changes:
     -   Add an admin user for yourself. Verify you can login with it.
-    -   Remove the CivCoreAdmin@gmail.com user - this is REQUIRED
+    -   **Remove the CivCoreAdmin@gmail.com user - this is REQUIRED**
     -   Change the site title, icon, see Settings -\> General
     -   Change the title of the home page.
     -   Create more users as needed.
