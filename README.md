@@ -1,4 +1,3 @@
-```{=html}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -64,7 +63,7 @@ blockquote {
 ```
 # make-core
 
-![version](https://img.shields.io/badge/version-0.5.1-orange.svg)
+![version](https://img.shields.io/badge/version-0.5.2-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
@@ -75,7 +74,7 @@ Make the current WordPress site ready to be a core site.
 Source:
 <https://moria.whyayh.com/rel/released/software/own/WP-make-core/>
 
-1.  Download the make-core-0.5.1.zip file.
+1.  Download the make-core-0.5.2.zip file.
 2.  Use Add Plugins, Upload Plugin, Install, Activate
 
 ## How do I use this plugin?

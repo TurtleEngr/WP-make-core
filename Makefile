@@ -94,7 +94,7 @@ README.html : README.org VERSION
 	sed -i "s/VERSION/$$(cat VERSION)/" $@
 
 README.md : README.org VERSION
-	pandoc -f org -t markdown <README.org >$@
+	pandoc -f org -t markdown <README.org | awk '/```{=html}/,/```/ {next} {print $$0}' >$@
 	sed -i "s/VERSION/$$(cat VERSION)/" $@
 	sed -i 's/^\[version]/![version]/' $@
 	sed -i 's/^\[WordPress]/![WordPress]/' $@
