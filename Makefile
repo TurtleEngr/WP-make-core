@@ -35,6 +35,10 @@ usage :
 	@echo "save - ci, push develop to github, copy to $(mPubDev)"
 	@echo "publish - tag, ci, push to develop, merge to main,"
 	@echo "    push to main, copy to $(mPubRel)"
+	@echo
+	@echo "VERSION VERSION-dev VERSION-rel"
+	@echo $$(cat VERSION*)
+	@git st
 
 update :
 	git co develop
