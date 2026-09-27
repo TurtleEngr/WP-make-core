@@ -1,0 +1,149 @@
+* Make Core
+
+** Work Flow
+
++ Define pages to keep with MakeCore.
++ Run MakeCore
++ Remove all revisions with https://wordpress.org/plugins/wp-optimize/
++ Create a core-admin user, remove all other
+
+** MakeCore plugin
++ Follow the directions in CLAUDE.org
+
++ Goal: Make a WordPress plugin that can be used to remove a lot of
+  content so that a "core" WordPress site is ready to be handed off to
+  others.
+
++ Plugin name: MakeCore
+
++ Initial version: 0.1
+
+*** Settings Admin Page
+
++ Create an admin page with three text boxes, and two buttons.
+
++ "Keep Posts" Text box - This will be a list of post URLS, one per line,
+  that will not be deleted. 
+
++ "Keep Pages" Text box - This will be a list of page URLS, one per line,
+  that will not be deleted.
+
++ When the "List" button is clicked, the list of post and page URLs
+  that will be deleted will be put in the "To Be Deleted" scrollable
+  text box. In other words, this will be a list of all the posts
+  and pages that are not in the Keep text boxes.
+
++ When the "Delete" button is clicked, an OK or Cancel message box
+  will popup. If OK is pressed the posts and pages in the
+  "To Be Deleted" box will be removed.
+
++ After pages and posts are deleted, remove all "revisions" from the
+  remaining pages and posts.
+
+** Response
+
+- That skill targets standalone web UI; a WordPress admin screen
+  should match core's admin styling instead, so I'm using native WP
+  markup and classes. Writing the plugin now.Install by copying the
+  'makecore' folder into 'wp-content/plugins/'.
+
+- How it works, given your three answers:
+
+*** Delete is permanent.
+- 'wp_delete_post($tId, true)' — no trash, no undo. The confirm dialog
+  and the on-page warning are the only guards.
+
+*** Delete acts on the box.
+- The textarea is editable and the handler parses whatever it
+  contains, resolving each line independently. Blank lines and '#'
+  comment lines are ignored, so you can annotate the list before
+  deleting.
+
+*** All statuses, including trash.
+- 'fMcStatusList()' covers publish, future, draft, pending, private,
+  and trash.
+
+- Two implementation notes worth knowing about:
+
+- 'url_to_postid()' only resolves published content, which would have
+  made the "everything including trashed" answer unworkable on its
+  own. So 'fMcResolveUrl()' tries three things in order: a
+  'p='/'page_id=' query arg (which is what 'get_permalink()' returns
+  for drafts), then 'url_to_postid()', then a direct slug lookup
+  against 'wp_posts' in any status (which catches trashed items, whose
+  slugs carry a '__trashed' suffix). If a slug is duplicated across
+  two items, the lowest ID wins — an edge case I chose not to build UI
+  around.
+
+- Because the box is editable, a typo could in principle resolve to
+  something you didn't mean. Delete therefore re-checks each ID's post
+  type and refuses anything that isn't a post or page, and still
+  honors the front page / posts page exclusion. Anything skipped is
+  reported by URL in a warning notice rather than dropped silently.
+
+- I couldn't lint this — there's no PHP interpreter in my sandbox and
+  the package mirrors aren't reachable. Structure checks pass
+  (balanced braces, no tabs, all lines under 79 chars), but run 'php
+  -l makecore.php' before activating.
+
+** Refactor
+
++ Refactor makecore.php plugin
+
++ Break text box "To Be Deleted" into two text boxes, labeled:
+  "Delete Posts" and "Delete Pages"
+
++ When "List" button is selected, 
+  + all posts not in "Keep Posts" will be put in "Delete Posts"
+  + and all pages not in "Keep Pages" will be put in "Delete Pages"
+
++ Sort the URLs in the "Delete Posts" and "Delete Pages" text boxes.
+
+** Response 
+
+- I read 'CLAUDE.org' and 'CodingStyle.org' first. Here's what I'm
+  assuming before the code — flag anything you disagree with.
+
+*** Assumptions
+
+1. *Keep lists are now type-specific.* "Keep Posts" only protects
+   posts, "Keep Pages" only protects pages. Previously the two boxes
+   were merged before filtering, so a page URL typed into the wrong
+   box still worked. Now it won't. Because the consequence is
+   permanent deletion, I made a mismatch loud instead of silent: a URL
+   in the wrong keep box gets reported in the "Skipped these lines"
+   warning. It is still *not* kept. Say the word if you'd rather it be
+   kept silently, or rather have no check at all.
+2. *Sort is plain ascending string sort on the full permalink URL*
+   (PHP 'sort()'), not by ID, title, or date.
+3. *Delete still acts on both boxes together.* 'fMcDeleteUrls()'
+   already validates type per URL, so it doesn't need to know which
+   box a line came from. Putting a page URL in "Delete Posts" will
+   still delete it. Tell me if Delete should reject cross-type lines
+   instead.
+4. Revision purge is unchanged — it still covers all remaining posts
+   *and* pages.
+
+*** Plan
+→ verify: 'php -l' clean, and each numbered requirement traceable to a
+changed line.*What changed*
+
+| Requirement                 | Change                                                                                                                                                                                     |
+|-----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Two delete boxes            | '$gMcDelList' → '$gMcDelPost' / '$gMcDelPage'; fields 'mcToDelete' → 'mcDelPosts' / 'mcDelPages'; two '&lt;h2>' sections                                                                   |
+| List fills each box by type | 'fMcMakeList()' takes a '$pType'; 'fMcHandlePost()' calls it once per type with its own keep box                                                                                           |
+| Sort                        | 'sort($tOut)' in 'fMcMakeList()'                                                                                                                                                           |
+| Supporting                  | 'fMcAllIds($pType)' now takes a type list; 'fMcKeepIds()' takes '$pType' and rejects cross-type entries; List notice reports both counts; confirm text names both boxes; version 0.1 → 0.2 |
+
+*** Not verified.
+- 'php' isn't in this container and 'apt-get install php-cli' failed,
+  so I couldn't run 'php -l'. Please lint before installing, and run
+  it against a database copy first — the two 'fMcMakeList()' calls are
+  the lines to watch, since a keep URL landing in the wrong box now
+  means that item shows up for deletion.
+
+- Two things I deliberately left alone: 'fMcSlugToId()' still searches
+  both post types (a post and page sharing a slug still resolves to
+  the lower ID — pre-existing, unrelated to this request), and the
+  forced-keep IDs are merged into both lists even though they're
+  always pages, which is harmless.

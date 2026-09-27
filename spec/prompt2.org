@@ -1,0 +1,69 @@
+* Make Core
+
+** MakeCore Plugin Refactor
++ Follow the directions in CLAUDE.org
+
++ Goal: Refactor make-core.php. Change the listing of URLs to only
+  be the slug part of the URLs. I.e. don't include the domain name.
+
++ Source code and documentation can be found at
+  https://github.com/TurtleEngr/WP-make-core/tree/develop
+
+** Response
+
+- I'll start by looking at the repository.I have the source. Before
+  the code, one thing worth naming.
+
+*** Ambiguity in "slug part."
+- Two readings:
+
+1. *The URL path* — 'https://site.com/2026/05/my-post/' →
+   '/2026/05/my-post/'
+2. *Just the post_name* — 'https://site.com/2026/05/my-post/' →
+   'my-post'
+
+- Your "I.e. don't include the domain name" points at #1, so that's
+  what I implemented. It also resolves more reliably on the round
+  trip: 'fMcResolveUrl()' can hand a full path to 'url_to_postid()'
+  and get an exact match, whereas a bare 'my-post' always falls
+  through to 'fMcSlugToId()', which takes the lowest ID matching that
+  'post_name' — so a post and a page sharing a slug, or a child page
+  whose slug collides, would resolve to the wrong item. Say the word
+  if you meant #2; it's a one-line change in the new function.
+
+- Let me check the current behavior and make the change.PHP is
+  available now. Making the edits.Now the two Delete box descriptions,
+  so the page matches what it now emits:Clean lint, no lines over 79,
+  no tabs. Now a quick check that the new function behaves on the URL
+  shapes WordPress actually produces:Four changes, all in service of
+  the one request:
+
+- *New 'fMcUrlPath()'* — strips scheme and domain, returns the path.
+- *'fMcMakeList()'* — wraps 'get_permalink()' in it, so both Delete boxes now fill with paths. Sorting is now by path, which groups related items better than the old full-URL sort did.
+- *Doc comment* on 'fMcMakeList()' and the *two Delete box descriptions* — updated to describe what the boxes now contain.
+
+- Nothing on the delete side changed. 'fMcResolveUrl()' already
+  handled bare paths: 'url_to_postid()' accepts them, and
+  'fMcSlugToId()' was already doing 'parse_url(..., PHP_URL_PATH)' and
+  taking the basename. Full URLs still work in the Keep boxes, so
+  anything you have saved from before still resolves.
+
+- Two judgment calls worth flagging:
+
+- *I kept the query string.* If a site uses plain permalinks,
+  'get_permalink()' returns 'https://site.com/?p=12', and taking only
+  the path would collapse every post to '/' — the list would be
+  useless and Delete would fail on all of it. Four lines prevent that,
+  and 'fMcResolveUrl()' already has a '?p=' branch to catch it on the
+  way back. Drop the '$tQuery' block if plain permalinks aren't a
+  configuration you care about.
+
+- *Percent-encoding is left alone.* A post titled "café" lists as
+  '/caf%C3%A9/', which is what 'get_permalink()' returns and what
+  resolves correctly. Decoding it would look nicer but risks a
+  round-trip failure.
+
+- I didn't touch the README. Its step 3 says "Copy the URIs listed in
+  the Delete Posts and Delete Pages text boxes" — still accurate,
+  since a path is a URI reference. Tell me if you want that wording
+  tightened anyway.

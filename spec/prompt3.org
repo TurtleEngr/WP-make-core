@@ -1,0 +1,271 @@
+* Make Core
+
+** MakeCore Plugin Refactor
++ Follow the directions in CLAUDE.org. 
+
++ Goal: Add a feature to make-core.php. Is it possible to delete all
+  media files that are not used in a page or post? If yes, add that
+  function, and execute it when the Delete button is clicked.
+
++ Source code and documentation can be found at
+  https://github.com/TurtleEngr/WP-make-core/
+
+** Response
+- I'll start by looking at the repository.Interesting — the README
+  already documents "Media files that are not referenced will be
+  deleted." Let me get the actual source.## Short answer
+
+- Yes, it's possible — and worth noting the docs already promise
+  it. Both 'README.org' and 'readme.txt' list "Media files that are
+  not referenced will be deleted" under the Delete button, but there's
+  no such code in 'make-core.php'. So this is filling in a
+  documented-but-missing feature.
+
+*** How it would work
+
+- The natural place is 'fMcHandlePost()', in the 'delete' branch,
+  *after* 'fMcDeleteUrls()' and alongside
+  'fMcPurgeRevisions()'. Order matters: media that was only referenced
+  by a deleted post has to become unreferenced before the scan runs.
+
+- The scan itself would build a "used" set from whatever posts and
+  pages survive:
+
+1. Featured images ('_thumbnail_id').
+2. Attachment IDs in content — 'wp-image-123' classes and '[gallery
+   ids="..."]'.
+3. Filename matches. This is the part that has to be a heuristic:
+   content references 'photo-300x200.jpg' or 'photo-scaled.jpg', not
+   the original 'photo.jpg'. Matching on the base filename catches all
+   the generated sizes at once.
+
+- Then 'wp_delete_attachment($tId, true)' on everything not in that
+  set, which removes the file and all its generated sizes.
+
+*** What I want to flag before writing it
+
+- The filename match is fuzzy by design, and I'd deliberately bias it
+  toward *false "used"* — an attachment named '1.jpg' or 'logo.png'
+  will match almost anything and get kept. That's the safe direction,
+  since the alternative is permanent file deletion. You should expect
+  this to leave some genuinely-unused files behind rather than trust
+  it to be exhaustive.
+
+- Also out of scope unless you say otherwise: orphaned files sitting
+  in 'wp-content/uploads' with no Media Library record. Deleting those
+  means walking the filesystem, and that directory also holds backups,
+  cache, and plugin-generated files. Too dangerous to sweep blind.
+
+- Three decisions I don't want to make silently:
+
+1. An image uploaded to a surviving post (post_parent points at it)
+   but never actually inserted into its content — used or not?
+   + Delete it (only content references count)
+2. What should count as "used"? Media can also be referenced by the
+   site logo, site icon, header/background image, and custom post
+   types.
+   + Posts and pages + protect site logo/icon/header
+3. The plugin's whole workflow is review-then-delete. Should media get
+   the same treatment?
+   + Just delete, report the count after
+
+- Got it. Locking in: 'post_parent' is ignored entirely, only real
+  content references count; site icon/logo/header/background are
+  force-kept; Delete just runs and reports a count.PHP 8.3 is
+  available for a syntax check. Now writing the code.Now wiring it
+  into the Delete action:Now verifying: syntax, line width, and that
+  the regexes actually behave.All 14 checks pass. Confirming the
+  changes are surgical:## What changed
+
+- Six existing lines touched (two notice strings and the confirm/intro
+  text, all because the Delete button's behavior changed), plus six
+  new functions inserted before 'fMcPostText()':
+
+- 'fMcAllMediaIds()' — attachments use the 'inherit' status, so
+  'fMcStatusList()' doesn't apply and they need their own query.
+- 'fMcRemainText()' — content and excerpt of every surviving post and
+  page, concatenated once rather than re-queried per attachment.
+- 'fMcForcedKeepMedia()' — site icon, site logo, custom logo, header
+  and background images. Mirrors the existing 'fMcForcedKeep()'
+  pattern.
+- 'fMcUsedMediaIds()' — featured images, 'wp-image-NNN' classes,
+  '[gallery ids=...]'.
+- 'fMcFileInText()' — filename match, extension stripped, which is
+  what catches 'photo-300x200.jpg' and 'photo-scaled.jpg'.
+- 'fMcPurgeMedia()' — the driver, called right after
+  'fMcPurgeRevisions()' so media orphaned by the post deletion is
+  visible as unused.
+
+*** Verification
+
+- 'php -l' clean, no lines over 79 chars, no tabs. I also ran the two
+  matching functions against a stub harness — 14 cases covering
+  classic and Gutenberg markup, gallery quoting variants, PDF links,
+  sized and scaled variants, and attachments with no file. All
+  passed. The harness was scratch work and isn't in the deliverable;
+  say the word if you'd like it kept as a real test file.
+
+*** Two things to know before running it
+
+- 'wp-image-NNN' is what carries the ID in both classic and block
+  markup, so Gutenberg images match on the class rather than the
+  '"id":91' in the block comment. That's deliberate — searching for
+  bare '"id":N' would collide with unrelated block attributes. It does
+  mean an image whose 'wp-image-' class was stripped by hand-edited
+  HTML falls through to the filename check, which will still usually
+  catch it.
+
+- The bigger one: 'fMcForcedKeepMedia()' only protects the four
+  site-level slots you picked. Media referenced from custom post
+  types, widgets, reusable blocks, or ACF-style meta fields will read
+  as unused and get deleted. On the test-site copy the README's
+  workflow calls for, that's recoverable. Worth a look at the reported
+  count before you trust the run.
+
+** Followup Prompt
+
+- There are still many media files in the /wp-content/uploads/
+  directory. Can you be more aggressive and remove the ones that are
+  not used by pages or posts? But keep the site
+  icon/logo/header/background images.
+
+** Response
+
+- Before I write this, one thing worth naming: the files that remain
+  almost certainly have *two* different causes, and only one of them
+  is a filesystem problem.Two changes then. First, tightening the
+  matcher I flagged last time — it's the cheaper win:Now the
+  filesystem sweep, added after 'fMcPurgeMedia()':That edit was wrong
+
+- I dropped a line. Let me check and repair:The 'isset' guard got
+  consumed by my match. Restoring it:Upstream now has my previous
+  version committed. Let me verify 'fMcPostText' is byte-identical to
+  it:Restored exactly. Now wiring the sweep into the Delete action:Now
+  testing — the sweep deletes real files, so this needs a genuine
+  trial run against a fake uploads tree:The harness caught a real bug
+
+- I typed '$tText' instead of '$pText' in the parameter. Let me
+  confirm it's in the source, not just the copy:Confirmed in the
+  source. This one was serious: '$tText' is undefined, so 'preg_match'
+  returns false for everything, meaning *every* attachment would
+  look unreferenced and get deleted. Fixing:All 35 pass. Final style
+  and scope checks:## Two causes, two fixes
+
+- The leftover files aren't one problem. Attachments that survived
+  because my matcher was too loose are a *database* issue; files with
+  no attachment row at all are a *filesystem* issue. The first version
+  only ever touched attachments, so it couldn't see the second group.
+
+*** Tightened 'fMcFileInText()'.
+- It was doing a bare 'strpos' on the filename with the extension
+  stripped, so an image named 'home.jpg' counted as used if the word
+  "home" appeared anywhere in any surviving page. Now the name has to
+  be followed by its extension, with an optional size suffix in
+  between. 'photo-300x200.jpg' and 'photo-scaled.jpg' still match; the
+  word "photo" in a sentence no longer does.
+
+*** New 'fMcSweepUploads()'.
+- Walks the uploads tree and deletes any file no surviving attachment
+  claims. 'fMcKeptFiles()' builds that claim set from
+  'get_attached_file()' plus every entry in '_wp_attachment_metadata'
+  — sizes and 'original_image' — plus '.webp'/'.avif' siblings, since
+  optimizer plugins write those without telling WordPress. This is
+  what catches manual FTP uploads, leftovers from long-deleted
+  attachments, and stale thumbnail sizes from a previous theme.
+
+*** Guards, since this deletes from disk directly
+
+- Two allow-lists, both editable at the top of the new block:
+
+- 'fMcMediaExt()' — only image, audio, video, and document extensions
+  get deleted. '.php', '.htaccess', '.css', '.js', '.zip', and '.log'
+  are never touched, which protects WordPress's index.php guards,
+  Elementor's generated CSS, and backup archives.
+- 'fMcSkipDirs()' — skipped whole. Includes 'sites', which matters on
+  multisite: without it, running this on the main site would delete
+  every other site's media.
+
+- Symlinks are skipped rather than followed, so the sweep can't escape
+  the uploads tree.
+
+*** A bug worth mentioning
+
+- My tightened regex initially referenced '$tText' where the parameter
+  is '$pText'. Undefined variable, so 'preg_match' returned false for
+  every attachment, and every single media file would have looked
+  unreferenced and been deleted. The test harness caught it on the
+  first run. I'd been about to hand you a file that wipes the media
+  library.
+
+- Verification: 35 checks, all passing — the sweep ran against a real
+  temp tree covering kept sizes, webp siblings, orphans, and all
+  eleven protected paths, plus idempotency on a second pass. 'php -l'
+  clean, no lines over 79 chars, no tabs. Fourteen lines changed
+  against upstream, all traceable to this request.
+
+- Empty year/month directories are left behind. Harmless, but say the
+  word if you want them pruned too.
+
+** Followup 2
+
+- Yes, prune empty year/month directories.
+
+*** Response
+
+- Dropped the comment block again. Checking and restoring:Syntax is
+  fine but the doc comment is gone. Restoring it:Now testing the
+  pruning against a real tree, including the ordering edge case:Let me
+  confirm that long-name test case actually has teeth — i.e. that
+  sorting by string length instead of depth would genuinely
+  fail:That's a correction worth making: the strlen version passes
+  too. My reasoning in that test comment was wrong — a parent path is
+  always a strict prefix of its child, so it's always shorter, meaning
+  strlen sorting happens to order children first as well. Let me check
+  whether the sort is load-bearing at all:Confirmed the sort is
+  essential — without it only leaf directories go, and parents are
+  orphaned. Depth and strlen both happen to work; I'll keep depth
+  since it states the intent directly. Final checks:Added
+  'fMcPruneDirs()', called after 'fMcSweepUploads()' in the delete
+  branch. It collects directories, sorts deepest-first, then 'rmdir's
+  each one. 'rmdir' refuses non-empty directories, so that call is its
+  own safety check — no directory holding anything can be removed even
+  if the logic were wrong.
+
+- Depth-first ordering means a whole empty branch collapses in one
+  pass: '2025/03/extra' goes, which empties '2025/03', which empties
+  '2025'. The skip list is reused, so 'sites', 'updraft', 'wpforms'
+  and the rest are neither entered nor removed, empty or not. The
+  uploads directory itself is never a candidate, since iteration
+  starts at its children.
+
+- The notice now reads as two sentences rather than one long list,
+  since five counts in one clause was getting unwieldy.
+
+*** On my own verification
+
+- Two things worth reporting honestly.
+
+- I wrote a test case claiming that sorting by string length instead
+  of depth would break pruning, and asserted as much in the previous
+  message. That was wrong. A parent path is always a strict prefix of
+  its child, so it is always shorter — string length happens to
+  produce correct ordering too. I kept the depth sort because it says
+  what it means, not because the alternative fails.
+
+- Removing the sort entirely *does* break it: 5 of 18 checks fail,
+  with only leaf directories removed and every parent orphaned. So the
+  sort is load-bearing; my specific claim about *which* sort was not.
+
+- 18 checks pass, covering multi-level collapse, a survivor keeping
+  its month folder alive, all four skip-dir shapes, the basedir, and
+  idempotency. 'php -l' clean, no lines over 79 characters, no tabs,
+  and every 'fMc' call resolves to a definition.
+
+*** Standing caveat
+
+- The three destructive passes now run unconditionally behind one
+  confirm dialog, and 'fMcSweepUploads()' deletes from disk with no
+  undo. The skip list in 'fMcSkipDirs()' covers the plugins I could
+  name, not the ones on your actual site — worth reading that list
+  against your 'uploads/' directory before the first real run, and
+  worth doing on the test-site copy the README's workflow calls for.
