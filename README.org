@@ -81,46 +81,41 @@ Source: https://moria.whyayh.com/rel/released/software/own/WP-make-core/
 
 *** Prepare
 
-1. Install this plugin to your main WP site.
-   
-2. Add "core" pages and posts that will replace existing pages.  For
-   example:
-   + Duplicate your front page to "Core Home" page, then delete all
-     links and reference that are specific to your site. Add links to
-     other "core" example pages and posts.
-   + Example core posts can be created, but their status should be
-     "private."
-   
-*** Identify the pages and posts that should remain
-
-1. Go to Settings -> MakeCore. With blank Keep text boxes, click on
-   the "List" button (only).
-
-2. Copy the URIs listed in the Delete Posts and Delete Pages text
-   boxes, to a text editor. Delete the URIs that should be deleted.
-
-3. Copy the URIs from the editor to the Keep text boxes. Click on the
-   "List" button (only).
-
-4. Repeat steps 2 and 3 until the Delete lists look OK. *DO NOT CLICK ON THE*
-   "Delete" button.
-
-*** Create the core pages and posts
-
 1. Using your hosting provider's process, copy your main site to a
-   "test" site. ALL THE OTHER STEPS ARE DONE ON THE TEST SITE COPY.
+   "test" site that will be used to make your "core" site template.
 
 2. Sign in to the test site.
 
-3. Go to Settings -> MakeCore. Click on the the "List" button.
+3. Install this plugin: make-core
+   
+4. Add "core" pages and posts that will replace existing pages.  Note:
+   the core pages and posts could be implemented on your main site, so
+   long as the Pages are not referenced and the Posts are kept
+   "private."
+   - For example:
+   + Duplicate the "home page" , thendelete all links and references
+     that are specific to your site. Add links to other "core" example
+     pages and posts.
+   + Example core posts can be created.
+   
+*** Identify the pages and posts that should remain
 
-4. Adjust the Keep text boxes as needed.
+1. Sign in to the test site.
 
-5. Repeat step 3 and 4, until Delete list is OK.
+2. Go to Settings -> MakeCore. With blank Keep text boxes, click on
+   the "List" button (only!).
+
+3. Copy the URIs listed in the Delete Posts and Delete Pages text
+   boxes, to a text editor. Delete the URIs that should be deleted.
+
+4. Copy the URIs from the editor to the Keep text boxes. Click on the
+   "List" button (only!).
+
+5. Repeat steps 3 and 4 until the Delete lists look OK.
 
 6. Click on the "Delete" button:
    + You will be prompted, with: Are you sure?
-   + The URIs in the List boxes will be deleted
+   + The URIs in the Delete boxes will be deleted
    + Revisions will be removed from remaining pages and posts
    + Media files that are not referenced will be deleted
 
