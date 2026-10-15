@@ -64,7 +64,7 @@ blockquote {
 ```
 # Install Civ Core
 
--   Version: 0.5.3
+-   Version: 0.5.4
 
 ## Get CivCore \"backup\" files
 

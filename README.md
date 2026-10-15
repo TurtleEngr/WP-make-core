@@ -50,11 +50,11 @@ div.red {
 }
 
 blockquote {
-    margin-left: 5%; 
-    margin-right: 5%; 
-    font-family: Times, serif; 
-    font-style: italic; 
-    text-align: left; 
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: Times, serif;
+    font-style: italic;
+    text-align: left;
     text-indent: 0px;
 }
   </style>
@@ -63,7 +63,7 @@ blockquote {
 ```
 # make-core
 
-![version](https://img.shields.io/badge/version-0.5.3-orange.svg)
+![version](https://img.shields.io/badge/version-0.5.4-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
@@ -74,105 +74,178 @@ Make the current WordPress site ready to be a core site.
 Source:
 <https://moria.whyayh.com/rel/released/software/own/WP-make-core/>
 
-1.  Download the make-core-0.5.3.zip file.
+1.  Download the make-core-0.5.4.zip file.
 2.  Use Add Plugins, Upload Plugin, Install, Activate
 
 ## How do I use this plugin?
 
 ### Prepare
 
-1.  Install this plugin to your main WP site.
+1.  Using your hosting provider\'s process, copy your main site to a
+    \"test\" site that will be used to make your \"core\" site template.
 
-2.  Add \"core\" pages and posts that will replace existing pages. For
-    example:
+2.  Sign in to the test site.
 
-    -   Duplicate your front page to \"Core Home\" page, then delete all
-        links and reference that are specific to your site. Add links to
-        other \"core\" example pages and posts.
-    -   Example core posts can be created, but their status should be
-        \"private.\"
+3.  Install this plugin: make-core
+
+4.  Add \"core\" pages and posts that will replace existing pages. Note:
+    the core pages and posts could be implemented on your main site, so
+    long as the Pages are not referenced and the Posts are kept
+    \"private.\"
+
+    -   For example:
+    -   Duplicate the \"home page\" , thendelete all links and
+        references that are specific to your site. Add links to other
+        \"core\" example pages and posts.
+    -   Example core posts can be created.
 
 ### Identify the pages and posts that should remain
 
 1.  Go to Settings -\> MakeCore. With blank Keep text boxes, click on
-    the \"List\" button (only).
+    the \"List\" button (only!).
 
 2.  Copy the URIs listed in the Delete Posts and Delete Pages text
     boxes, to a text editor. Delete the URIs that should be deleted.
 
 3.  Copy the URIs from the editor to the Keep text boxes. Click on the
-    \"List\" button (only).
+    \"List\" button (only!).
 
-4.  Repeat steps 2 and 3 until the Delete lists look OK. **DO NOT CLICK
-    ON THE** \"Delete\" button.
+4.  Repeat steps 2 and 4 until the Delete lists look OK.
 
-### Create the core pages and posts
-
-1.  Using your hosting provider\'s process, copy your main site to a
-    \"test\" site. ALL THE OTHER STEPS ARE DONE ON THE TEST SITE COPY.
-
-2.  Sign in to the test site.
-
-3.  Go to Settings -\> MakeCore. Click on the the \"List\" button.
-
-4.  Adjust the Keep text boxes as needed.
-
-5.  Repeat step 3 and 4, until Delete list is OK.
-
-6.  Click on the \"Delete\" button:
+5.  Click on the \"Delete\" button:
 
     -   You will be prompted, with: Are you sure?
-    -   The URIs in the List boxes will be deleted
+    -   The URIs in the Delete boxes will be deleted
     -   Revisions will be removed from remaining pages and posts
     -   Media files that are not referenced will be deleted
 
+### Example posts and pages kept for the IPV site
+
+1.  Keep Posts
+
+    ``` example
+    /4-tips-for-developing-critical-thinking-skills/
+    /aclu/
+    /heather-cox-richardson/
+    /indivisible-org/
+    /league-of-women-voters/
+    /ms-now/
+    /no-kings/
+    /stop-ice-raids-alert-network/
+    /the-highest-common-denominator/
+    ```
+
+2.  Keep Pages
+
+    ``` example
+    /about-us/
+    /add-event-form/
+    /add-post-form/
+    /calendar/
+    /categories-and-tags/
+    /change-log/
+    /claude-chat-sample-questions/
+    /claude-chat/
+    /contact-admin/
+    /contact-general/
+    /contact-join/
+    /creating-and-using-qr-codes/
+    /finding-information/
+    /for-admins-xyzzy/
+    /for-authors/
+    /for-editors/
+    /grow-the-site/
+    /guidelines-for-posts/
+    /how-to-find-things-on-this-site/
+    /how-to-make-links-that-last/
+    /ipv-rss-feeds/
+    /keyword-search/
+    /latest-posts/
+    /limitations/
+    /list-all-posts/
+    /lists-of-interesting-posts/
+    /news-feed-page/
+    /privacy-policy/
+    /search/
+    /site-navigation-help/
+    /sizing-graphics/
+    /submit-reference/
+    /training/
+    /using-ai-to-categorize-articles-and-books/
+    /volunteer-opportunities/
+    /what-can-you-do/
+    ```
+
 ## Manual Cleanup Steps
 
--   **If Imagely plugin is installed:**
+### If Imagely plugin is installed
 
-    -   Delete all Galleries
-    -   Delete all Albums
-    -   Delete all Tags
+-   Delete all Galleries
+-   Delete all Albums
+-   Delete all Tags
 
--   **Replace front page with \"Core Home\"**
+### Replace front page with \"Core Home\"
 
-    -   Duplicate \"Core Home\" and edit it.
-    -   Change title to \"Home\"
-    -   Change slug to \"Home\"
-    -   Save
-    -   Settings -\> Reading, Set Homepage to \"Home\"
+-   If not already done:
+-   Duplicate \"Core Home\" and edit it.
+-   Change title to \"Home\"
+-   Change slug to \"Home\"
+-   Save
+-   Settings -\> Reading, Set Homepage to \"Home\"
 
--   **Make \"private\" example core posts \"public.\"**
+### Make \"private\" example core posts \"published\"
 
--   **Appearance -\> Customize**
+-   If there are private posts, you can edit them and make them
+    published.
 
-    -   Remove Logo
-    -   Change Site Identity to \"Core Sample\"
+### Appearance -\> Customize
 
--   **Edit *change-log***
+-   Replace the civ-core-logo.jpg
+-   Change Site Identity to \"Civ-Core\" (or make it blank)
 
-    -   Remove all of the entries.
-    -   Add Date for when this core was created.
+### Edit *change-log*
 
--   **Remove API keys and other personal stuff**
+-   Remove all of the entries.
+-   Add Date for when this core was created.
 
-    -   Remove Claude API
-    -   Remove personal IPs from Wordfront and AES
-    -   Remove Wordfront free license
-    -   Remove USP Pro plugin lifetime license (URL? TBD)
-    -   Remove FastBots plugin
+### Remove API keys and other personal stuff
 
--   **Remove all users**
+-   Remove Claude API
+-   Remove personal IPs from Wordfront and AES
+-   Remove Wordfront free license
+-   Remove USP Pro plugin lifetime license (URL? TBD)
+-   Remove FastBots plugin
 
-    -   Create gmail CivCoreAdmin@gmail.com (save the password)
-    -   Create WP admin account CivCoreAdmin@gmail.com (save the
-        password)
-    -   Remove all user except leave CivCoreAdmin@gmail.com
-    -   When the import files are given to others, give them the gmail
-        account and the WordPress user names and passwords.
-    -   After the WP site is imported, an admin account should be setup
-        immediately and the WP CivCoreAdmin@gmail.com account must be
-        deleted.
+### Remove all users
+
+-   Create civ-core-admin@googlegroups.com (done)
+
+-   Using the \"Temporary Login Without Password\" plugin, create user
+
+    -   civ-core-admin@googlegroups.com, Civ, Core
+    -   Expires one week after first use
+    -   To use the \"Login link\" you will need to change the domain
+        name (civ-core.indivisiblepv.info) to the domain name of your
+        site.
+        -   <https://civ-core.indivisiblepv.info/wp-admin/?wtlwp_token=75c2b799af068ce081bd06460b10421421a86b9fb4fb0cc581579f9884dbddc167746bee11359b3eac064dc7a3c6bbbc4496953b04673b82db0eecec46de2858>
+
+-   Remove all users except leave barafnel@gmail.com
+
+-   When the import files are given to others, give them the \"Login
+    Link\"
+
+-   After the WP site is imported, a new admin account should be setup
+    immediately. Test it. If it works remove the barafnel@gmail.com user
+    and disable the \"Temporary Login Without Password\" plugin.
+
+### TO DO
+
+-   Test the login link when the domain name is not
+    civ-core.indivisible.info? I.e. change the domain name link in the
+    \"Login link\"
+    -   <https://indivisiblepv.info/wp-admin/?wtlwp_token=92fc48fb5d96668a00abc430ca97428678eef7258e64bc54a5a621d0dea835fcc0e167bdba4fe6d4a9a5f90d5ab813c4bf248482f1974d9c16a2aea604384c99>
+    -   <https://test.indivisiblepv.info/wp-admin/?wtlwp_token=92fc48fb5d96668a00abc430ca97428678eef7258e64bc54a5a621d0dea835fcc0e167bdba4fe6d4a9a5f90d5ab813c4bf248482f1974d9c16a2aea604384c99>
+    -   Yes, that works!
 
 ## Export the Core (Hostinger)
 
